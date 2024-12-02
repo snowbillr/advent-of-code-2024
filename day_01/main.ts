@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { sumList } from '../utils/lists';
 
 const input = fs.readFileSync('./day_01/data.txt');
 const lines = input.toString().split('\n');
@@ -11,7 +12,7 @@ lines.forEach((line) => {
   right.push(parseInt(n2));
 })
 
-// part1()
+part1()
 part2()
 
 
@@ -21,7 +22,7 @@ function part1() {
 
   const diffs = left.map((n, i) => Math.abs(right[i] - n));
 
-  console.log(diffs.reduce((acc, diff) => acc + diff, 0));
+  console.log(sumList(diffs));
 }
 
 function part2() {
@@ -43,5 +44,5 @@ function part2() {
     return n * appearances;
   })
 
-  console.log(scores.reduce((acc, score) => acc + score, 0));
+  console.log(sumList(scores));
 }
