@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import { sumList } from '../utils/lists';
+import { readLines } from '../utils/input';
 
-const input = fs.readFileSync('./day_01/data.txt');
-const lines = input.toString().split('\n');
+const lines = readLines('./day_01/data.txt');
 
 const left: number[] = [];
 const right: number[] = [];
