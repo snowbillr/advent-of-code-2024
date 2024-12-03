@@ -2,30 +2,47 @@ import { readLines } from '../utils/input';
 
 // const lines = readLines('./day_02/example.txt');
 const lines = readLines('./day_02/data.txt');
-const reports = lines.map(l => l.split(' ').map(Number));
+const reportsInput = lines.map(l => l.split(' ').map(Number));
 
-function part1() {
-  function isReportSafe(report: number[]) {
-    const diffs = getLevelDiffs(report);
-
-    if (diffs.some(d => d === 0)) { // if there is a 0, it's not safe
-      return false
-    } else if (diffs.some(d => Math.sign(diffs[0]) !== Math.sign(d))) { // if there is a sign change, it's not safe
-      return false
-    } else if (diffs.some(d => Math.abs(d) > 3)) { // if there is a diff greater than 3, it's not safe
-      return false
-    } else {
-      return true
-    }
-  }
-
+function part1(reports) {
   const reportSafetyResults = reports.map(isReportSafe);
   return reportSafetyResults.filter(Boolean).length
 }
 
-function part2() {
-  function isReportSafe(report: number[]) {
-    const diffs = getLevelDiffs(report);
+function part2(reports) {
+  const reportSafetyResults = reports.map(report => {
+    // console.log('analyzing report', report)
+    if (isReportSafe(report)) {
+      // console.log('report is safe')
+      return true;
+    } else {
+      // console.log('analyzing with problem dampener')
+      let dampenedReportResults = false;
+      for (let i = 0; i < report.length; i++) {
+        const dampenedReport = report.slice(0, i).concat(report.slice(i + 1));
+        // console.log('analyzing dampened report', dampenedReport, isReportSafe(dampenedReport))
+        dampenedReportResults = dampenedReportResults || isReportSafe(dampenedReport);
+      }
+      return dampenedReportResults;
+    }
+  });
+
+  return reportSafetyResults.filter(Boolean).length
+
+  // console.log(reports, reportSafetyResults)
+}
+
+function isReportSafe(report: number[]) {
+  const diffs = getLevelDiffs(report);
+
+  if (diffs.some(d => d === 0)) { // if there is a 0, it's not safe
+    return false
+  } else if (diffs.some(d => Math.sign(diffs[0]) !== Math.sign(d))) { // if there is a sign change, it's not safe
+    return false
+  } else if (diffs.some(d => Math.abs(d) > 3)) { // if there is a diff greater than 3, it's not safe
+    return false
+  } else {
+    return true
   }
 }
 
@@ -40,5 +57,5 @@ function getLevelDiffs(report: number[]): number[] {
   }, [])
 }
 
-console.log(part1())
-console.log(part2())
+console.log(part1(reportsInput))
+console.log(part2(reportsInput))
