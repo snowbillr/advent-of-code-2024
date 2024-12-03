@@ -1,4 +1,7 @@
 import { readLines } from '../utils/input';
+import { log, enable } from '../utils/log';
+
+// enable()
 
 // const lines = readLines('./day_02/example.txt');
 const lines = readLines('./day_02/data.txt');
@@ -11,25 +14,25 @@ function part1(reports) {
 
 function part2(reports) {
   const reportSafetyResults = reports.map(report => {
-    // console.log('analyzing report', report)
+    log('analyzing report', report)
     if (isReportSafe(report)) {
-      // console.log('report is safe')
+      log('report is safe')
       return true;
     } else {
-      // console.log('analyzing with problem dampener')
+      log('analyzing with problem dampener')
       let dampenedReportResults = false;
       for (let i = 0; i < report.length; i++) {
         const dampenedReport = report.slice(0, i).concat(report.slice(i + 1));
-        // console.log('analyzing dampened report', dampenedReport, isReportSafe(dampenedReport))
+        log('analyzing dampened report', dampenedReport, isReportSafe(dampenedReport))
         dampenedReportResults = dampenedReportResults || isReportSafe(dampenedReport);
       }
       return dampenedReportResults;
     }
   });
 
-  return reportSafetyResults.filter(Boolean).length
+  log(reports, reportSafetyResults)
 
-  // console.log(reports, reportSafetyResults)
+  return reportSafetyResults.filter(Boolean).length
 }
 
 function isReportSafe(report: number[]) {
