@@ -38,17 +38,16 @@ class CorruptedMemoryVM {
     let match: RegExpExecArray | null = null;
     while (match = INSTRUCTION_REGEX.exec(this.corruptedMemory)) {
       if (match.groups == null) break;
+      if (!this.ops.includes(match.groups.op as Op)) continue;
 
-      if (this.ops.includes(match.groups.op as Op)) {
-        const token = {
-          op: match.groups.op as Op,
-          args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
-        }
-
-        if (token.op === 'mul' && token.args.length !== 2) continue;
-
-        tokens.push(token);
+      const token = {
+        op: match.groups.op as Op,
+        args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
       }
+
+      if (token.op === 'mul' && token.args.length !== 2) continue;
+
+      tokens.push(token);
     }
 
     log(tokens);
