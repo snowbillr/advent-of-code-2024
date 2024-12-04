@@ -1,4 +1,3 @@
-import { run } from 'node:test';
 import { readLines } from '../utils/input';
 import { log, enable } from '../utils/log';
 import { printSolutions, solution } from '../utils/solution';
