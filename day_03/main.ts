@@ -17,58 +17,70 @@ interface Token {
   args: number[];
 }
 
-const INSTRUCTION_REGEX = /(?<op>do|don't|mul)\((?<n1>\d{1,3})?,?(?<n2>\d{1,3})?\)/g;
+class CorruptedMemoryVM {
+  private corruptedMemory: string;
+  private ops: Op[];
 
-function parseCorruptedMemory(corruptedMemory: string, ops: Op[]): Token[] {
-  const tokens: Token[] = [];
-
-  let match: RegExpExecArray | null = null;
-  while (match = INSTRUCTION_REGEX.exec(corruptedMemory)) {
-    if (match.groups == null) break;
-
-    if (ops.includes(match.groups.op as Op)) {
-      const token = {
-        op: match.groups.op as Op,
-        args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
-      }
-
-      if (token.op === 'mul' && token.args.length !== 2) continue;
-
-      tokens.push(token);
-    }
+  constructor(corruptedMemory: string, ops: Op[] = ['mul', 'do', 'don\'t']) {
+    this.corruptedMemory = corruptedMemory;
+    this.ops = ops;
   }
 
-  log(tokens)
+  run(): number {
+    const tokens = this.parseCorruptedMemory();
+    return this.executeTokens(tokens);
+  }
 
-  return tokens;
-}
+  private parseCorruptedMemory(): Token[] {
+    const INSTRUCTION_REGEX = /(?<op>do|don't|mul)\((?<n1>\d{1,3})?,?(?<n2>\d{1,3})?\)/g;
 
-function executeTokens(tokens: Token[]) {
-  let shouldEvaluate = true;
-  return tokens.reduce((sum, token) => {
-    switch (token.op) {
-      case 'mul':
-        if (shouldEvaluate) {
-          return sum + token.args[0] * token.args[1];
+    const tokens: Token[] = [];
+
+    let match: RegExpExecArray | null = null;
+    while (match = INSTRUCTION_REGEX.exec(this.corruptedMemory)) {
+      if (match.groups == null) break;
+
+      if (this.ops.includes(match.groups.op as Op)) {
+        const token = {
+          op: match.groups.op as Op,
+          args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
         }
-        break;
-      case 'do':
-        shouldEvaluate = true;
-        break;
-      case 'don\'t':
-        shouldEvaluate = false;
-        break;
+
+        if (token.op === 'mul' && token.args.length !== 2) continue;
+
+        tokens.push(token);
+      }
     }
 
-    return sum;
-  }, 0)
+    log(tokens);
+
+    return tokens;
+  }
+
+  private executeTokens(tokens: Token[]): number {
+    let shouldEvaluate = true;
+    return tokens.reduce((sum, token) => {
+      switch (token.op) {
+        case 'mul':
+          if (shouldEvaluate) {
+            return sum + token.args[0] * token.args[1];
+          }
+          break;
+        case 'do':
+          shouldEvaluate = true;
+          break;
+        case 'don\'t':
+          shouldEvaluate = false;
+          break;
+      }
+
+      return sum;
+    }, 0);
+  }
 }
 
-function runCorruptedMemory(corruptedMemory: string, ops: Op[] = ['mul', 'do', 'don\'t']) {
-  const tokens = parseCorruptedMemory(corruptedMemory, ops);
-  return executeTokens(tokens);
-}
+solution('part 1', new CorruptedMemoryVM(corruptedMemory, ['mul']).run());
+solution('part 2', new CorruptedMemoryVM(corruptedMemory).run());
 
-solution('part 1', runCorruptedMemory(corruptedMemory, ['mul']));
-solution('part 2', runCorruptedMemory(corruptedMemory));
 printSolutions();
+
