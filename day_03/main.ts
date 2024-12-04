@@ -9,42 +9,49 @@ const input = readLines('day_03/data.txt');
 
 const corruptedMemory = input.join('');
 
-const MUL_REGEX = /(mul)\((?<n1>\d{1,3}),(?<n2>\d{1,3})\)/g;
-const INSTRUCTION_REGEX = /(?<op>do|don't|mul)\((?<n1>\d{1,3})?,?(?<n2>\d{1,3})?\)/g;
-
-function part1() {
-  let match: RegExpExecArray | null = null;
-  let sum = 0;
-
-  while (match = MUL_REGEX.exec(corruptedMemory)) {
-    if (match.groups == null) break;
-
-    sum += Number(match.groups.n1) * Number(match.groups.n2);
-  }
-
-  return sum;
-}
-
 interface Token {
   op: 'mul' | 'do' | 'don\'t';
   args: number[];
 }
 
+const INSTRUCTION_REGEX = /(?<op>do|don't|mul)\((?<n1>\d{1,3})?,?(?<n2>\d{1,3})?\)/g;
+
+function part1() {
+  const tokens = parseCorruptedMemory(corruptedMemory, { ops: ['mul'] });
+  return executeTokens(tokens);
+}
+
+
 function part2() {
+  const tokens = parseCorruptedMemory(corruptedMemory);
+  return executeTokens(tokens);
+}
+
+function parseCorruptedMemory(corruptedMemory: string, { ops = ['mul', 'do', 'don\'t'] } = {}): Token[] {
   const tokens: Token[] = [];
 
   let match: RegExpExecArray | null = null;
   while (match = INSTRUCTION_REGEX.exec(corruptedMemory)) {
     if (match.groups == null) break;
 
-    tokens.push({
-      op: match.groups.op as Token['op'],
-      args: [match.groups.n1, match.groups.n2].map(Number)
-    });
+    if (ops.includes(match.groups.op)) {
+      const token = {
+        op: match.groups.op as Token['op'],
+        args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
+      }
+
+      if (token.op === 'mul' && token.args.length !== 2) continue;
+
+      tokens.push(token);
+    }
   }
 
   log(tokens)
 
+  return tokens;
+}
+
+function executeTokens(tokens: Token[]) {
   let shouldEvaluate = true;
   return tokens.reduce((sum, token) => {
     switch (token.op) {
