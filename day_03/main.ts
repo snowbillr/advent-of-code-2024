@@ -1,5 +1,7 @@
+import { run } from 'node:test';
 import { readLines } from '../utils/input';
 import { log, enable } from '../utils/log';
+import { printSolutions, solution } from '../utils/solution';
 
 // enable();
 
@@ -9,34 +11,24 @@ const input = readLines('day_03/data.txt');
 
 const corruptedMemory = input.join('');
 
+type Op = 'mul' | 'do' | 'don\'t'
 interface Token {
-  op: 'mul' | 'do' | 'don\'t';
+  op: Op;
   args: number[];
 }
 
 const INSTRUCTION_REGEX = /(?<op>do|don't|mul)\((?<n1>\d{1,3})?,?(?<n2>\d{1,3})?\)/g;
 
-function part1() {
-  const tokens = parseCorruptedMemory(corruptedMemory, { ops: ['mul'] });
-  return executeTokens(tokens);
-}
-
-
-function part2() {
-  const tokens = parseCorruptedMemory(corruptedMemory);
-  return executeTokens(tokens);
-}
-
-function parseCorruptedMemory(corruptedMemory: string, { ops = ['mul', 'do', 'don\'t'] } = {}): Token[] {
+function parseCorruptedMemory(corruptedMemory: string, ops: Op[]): Token[] {
   const tokens: Token[] = [];
 
   let match: RegExpExecArray | null = null;
   while (match = INSTRUCTION_REGEX.exec(corruptedMemory)) {
     if (match.groups == null) break;
 
-    if (ops.includes(match.groups.op)) {
+    if (ops.includes(match.groups.op as Op)) {
       const token = {
-        op: match.groups.op as Token['op'],
+        op: match.groups.op as Op,
         args: [match.groups.n1, match.groups.n2].map(Number).filter(n => !Number.isNaN(n))
       }
 
@@ -72,5 +64,11 @@ function executeTokens(tokens: Token[]) {
   }, 0)
 }
 
-console.log(part1());
-console.log(part2());
+function runCorruptedMemory(corruptedMemory: string, ops: Op[] = ['mul', 'do', 'don\'t']) {
+  const tokens = parseCorruptedMemory(corruptedMemory, ops);
+  return executeTokens(tokens);
+}
+
+solution('part 1', runCorruptedMemory(corruptedMemory, ['mul']));
+solution('part 2', runCorruptedMemory(corruptedMemory));
+printSolutions();
