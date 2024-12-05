@@ -1,6 +1,6 @@
 import { readLines } from '../utils/input';
 import { log, enable } from '../utils/log';
-import { printSolutions, solution } from '../utils/solution';
+import { printSolutions, solution, xsolution } from '../utils/solution';
 import { Grid } from './Grid';
 
 enable()
