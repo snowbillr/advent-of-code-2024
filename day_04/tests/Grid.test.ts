@@ -17,7 +17,7 @@ enable()
   k l m n o
   p q r s t
   u v w x y
-  
+
 */
 
 const grid = new Grid([
@@ -37,6 +37,9 @@ log(grid.diagonalDL(1));
 log(grid.diagonalDL(2));
 log(grid.diagonalDL(3));
 log(grid.diagonalDL(4));
+
+log(grid.neighbors(0, 0))
+log(grid.neighbors(1, 1))
 
 /*
     diagonal(0, 'UR') => [a]

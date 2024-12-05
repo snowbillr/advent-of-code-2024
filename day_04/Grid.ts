@@ -13,6 +13,18 @@ export class Grid {
     return this.grid.length * 2 - 1;
   }
 
+  cell(row, col): string {
+    return this.grid?.[row]?.[col];
+  }
+
+  neighbors(row, col): Grid {
+    return new Grid([
+      [this.cell(row - 1, col - 1), this.cell(row - 1, col), this.cell(row - 1, col + 1)],
+      [this.cell(row, col - 1), this.cell(row, col), this.cell(row, col + 1)],
+      [this.cell(row + 1, col - 1), this.cell(row + 1, col), this.cell(row + 1, col + 1)]
+    ])
+  }
+
   row(index): string[] {
     return this.grid[index];
   }
@@ -75,5 +87,13 @@ export class Grid {
     }
 
     return result;
+  }
+
+  eachCell(fn: (cell: string, row: number, col: number) => void) {
+    for (let row = 0; row < this.grid.length; row++) {
+      for (let col = 0; col < this.grid[row].length; col++) {
+        fn(this.grid[row][col], row, col);
+      }
+    }
   }
 }
