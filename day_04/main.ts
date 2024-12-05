@@ -37,17 +37,12 @@ function countXMASOccurrences(grid: Grid): number {
   const masRegex = /MAS/g;
   let count = 0;
 
-  // find the indices of all the A characters
-  // for each index
-  // check if the cells [-1, -1] and [1, 1] from the index are M and S in either order
-  // check if the cells [-1, 1] and [1, -1] from the index are M and S in either order
-  // if both checks are true, increment the count
-
   grid.eachCell((cell, row, col) => {
     if (cell !== 'A') return;
 
     const neighbors = grid.neighbors(row, col);
-    if (countWordEitherDirection(neighbors.diagonalDL(2).join(''), masRegex) && countWordEitherDirection(neighbors.diagonalUR(2).join(''), masRegex)) {
+    if (countWordEitherDirection(neighbors.diagonalDL(2).join(''), masRegex)
+      && countWordEitherDirection(neighbors.diagonalUR(2).join(''), masRegex)) {
       count++;
     }
   });
