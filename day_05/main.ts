@@ -61,11 +61,24 @@ solution('part 1', (input) => {
   return sumMiddlePages(alreadyOrderedUpdates);
 }, { example: exampleInput , data: dataInput })
 
-solution('part 2', (input) => {
+solution('part 2 with custom bubble sort', (input) => {
   const inputParser = InputParser.fromLines(input);
 
   const unsortedPages = inputParser.pagesToUpdate.filter(pages => !isOrdered(pages, inputParser.orderingRules))
   const sortedUpdates = unsortedPages.map(pages => sort(pages, inputParser.orderingRules))
+
+  return sumMiddlePages(sortedUpdates);
+}, { example: exampleInput, data: dataInput })
+
+solution('part 2 with native sort method', (input) => {
+  const inputParser = InputParser.fromLines(input);
+
+  const unsortedPages = inputParser.pagesToUpdate.filter(pages => !isOrdered(pages, inputParser.orderingRules))
+  const sortedUpdates = unsortedPages.map(pages => pages.sort((a, b) => {
+    const rule = inputParser.orderingRules.find(rule => rule.includes(a) && rule.includes(b))
+    if (rule === undefined) return 0;
+    return rule[0] === a ? -1 : 1;
+  }))
 
   return sumMiddlePages(sortedUpdates);
 }, { example: exampleInput, data: dataInput })
