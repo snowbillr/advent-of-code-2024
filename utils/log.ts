@@ -8,3 +8,5 @@ export const log = (...items: any[]) => {
     console.log(...items)
   }
 }
+
+export const xlog = (...items: any[]) => null

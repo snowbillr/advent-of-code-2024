@@ -1,9 +1,9 @@
 import { readLines } from '../utils/input';
-import { log, enable } from '../utils/log';
+import { log, enable, xlog } from '../utils/log';
 import { printSolutions, solution, xsolution } from '../utils/solution';
 import { InputParser } from './InputParser';
 
-enable()
+// enable()
 
 const exampleInput = readLines('day_05/example.txt');
 const dataInput = readLines('day_05/data.txt');
@@ -47,44 +47,27 @@ function sort(pages: number[], orderingRules: number[][]) {
     }
   }
 
-  log(pages, sortedPages)
+  xlog(pages, sortedPages)
 
   return sortedPages;
 
 }
 
-solution('part 1 example', () => {
-  const inputParser = InputParser.fromLines(exampleInput);
+solution('part 1', (input) => {
+  const inputParser = InputParser.fromLines(input);
 
   const alreadyOrderedUpdates = inputParser.pagesToUpdate.filter(pages => isOrdered(pages, inputParser.orderingRules))
 
   return sumMiddlePages(alreadyOrderedUpdates);
-})
+}, { example: exampleInput , data: dataInput })
 
-solution('part 1', () => {
-  const inputParser = InputParser.fromLines(dataInput);
-
-  const alreadyOrderedUpdates = inputParser.pagesToUpdate.filter(pages => isOrdered(pages, inputParser.orderingRules))
-
-  return sumMiddlePages(alreadyOrderedUpdates);
-})
-
-solution('part 2 example', () => {
-  const inputParser = InputParser.fromLines(exampleInput);
+solution('part 2', (input) => {
+  const inputParser = InputParser.fromLines(input);
 
   const unsortedPages = inputParser.pagesToUpdate.filter(pages => !isOrdered(pages, inputParser.orderingRules))
   const sortedUpdates = unsortedPages.map(pages => sort(pages, inputParser.orderingRules))
 
   return sumMiddlePages(sortedUpdates);
-})
-
-solution('part 2 data', () => {
-  const inputParser = InputParser.fromLines(dataInput);
-
-  const unsortedPages = inputParser.pagesToUpdate.filter(pages => !isOrdered(pages, inputParser.orderingRules))
-  const sortedUpdates = unsortedPages.map(pages => sort(pages, inputParser.orderingRules))
-
-  return sumMiddlePages(sortedUpdates);
-})
+}, { example: exampleInput, data: dataInput })
 
 printSolutions()
