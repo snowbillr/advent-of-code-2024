@@ -9,12 +9,23 @@ const dataInput = readLines('day_07/data.txt');
 
 interface Equation {
   value: number;
-  operators: number[];
+  operands: number[];
 }
 
 const OPERATORS = {
   '+': (a, b) => a + b,
   '*': (a, b) => a * b
+}
+
+function equationsFromInput(input: string[]): Equation[] {
+  return input.map((line) => {
+    const [value, operands] = line.split(':');
+
+    return {
+      value: Number(value),
+      operands: operands.trim().split(' ').map(Number)
+    }
+  });
 }
 
 // 2^slots = operators ^ slots
@@ -41,14 +52,7 @@ function possibleCombinations(slots) {
 }
 
 solution('part 1', (input) => {
-  const equations = input.map((line) => {
-    const [value, operands] = line.split(':');
-
-    return {
-      value: Number(value),
-      operands: operands.trim().split(' ').map(Number)
-    }
-  })
+  const equations = equationsFromInput(input);
 
   const possibleEquations = equations.filter((equation) => {
     log(equation);
