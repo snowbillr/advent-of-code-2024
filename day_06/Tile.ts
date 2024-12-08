@@ -1,7 +1,5 @@
 export class Tile {
-  private visited = false;
-
-  constructor(public readonly type: TileType) {}
+  constructor(public readonly type: TileType, private visited: boolean = false) {}
 
   markVisited() {
     this.visited = true;

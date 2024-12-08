@@ -22,6 +22,11 @@ export class Tilemap {
     return new Tilemap(tiles);
   }
 
+  static fromTilemap(tilemap: Tilemap): Tilemap {
+    const tiles = tilemap.tiles.map((row) => row.map((tile) => new Tile(tile.type, tile.hasBeenVisited())));
+    return new Tilemap(tiles);
+  }
+
   constructor(public readonly tiles: Tile[][]) {}
 
   getTile({ row, col }: Coordinates): Tile {
