@@ -2,7 +2,7 @@ import { readLines } from '../utils/input';
 import { log, enable, xlog } from '../utils/log';
 import { printSolutions, solution, xsolution } from '../utils/solution';
 
-enable();
+// enable();
 
 const exampleInput = readLines('day_07/example.txt');
 const dataInput = readLines('day_07/data.txt');
@@ -14,7 +14,8 @@ interface Equation {
 
 const OPERATORS = {
   '+': (a, b) => a + b,
-  '*': (a, b) => a * b
+  '*': (a, b) => a * b,
+  '||': (a, b) => Number(`${a}${b}`),
 }
 
 function equationsFromInput(input: string[]): Equation[] {
@@ -32,9 +33,8 @@ function equationsFromInput(input: string[]): Equation[] {
 // 1 slot: [[*], [+]]
 // 2 slots: [[*, *], [*, +], [+, *], [+, +]]
 // 3 slots: [[*, *, *], [*, *, +], [*, +, *], [*, +, +], [+, *, *], [+, *, +], [+, +, *], [+, +, +]]
-function possibleCombinations(slots) {
+function possibleCombinations(slots, operators) {
   const combinations: (keyof typeof OPERATORS)[][] = [];
-  const operators = Object.keys(OPERATORS) as (keyof typeof OPERATORS)[];
 
   for (let i = 0; i < operators.length ** slots; i++) {
     const combination: ('*' | '+')[] = [];
@@ -51,13 +51,10 @@ function possibleCombinations(slots) {
   return combinations;
 }
 
-solution('part 1', (input) => {
-  const equations = equationsFromInput(input);
-
-  const possibleEquations = equations.filter((equation) => {
-    log(equation);
+function isEquationPossible(equation, operators) {
+  log(equation);
     const requiredOperators = equation.operands.length - 1;
-    const operatorCombinations = possibleCombinations(requiredOperators);
+    const operatorCombinations = possibleCombinations(requiredOperators, operators);
     xlog(operatorCombinations);
 
     const isPossible = operatorCombinations.some((combination) => {
@@ -77,7 +74,20 @@ solution('part 1', (input) => {
 
     log(isPossible);
     return isPossible;
-  });
+}
+
+solution('part 1', (input) => {
+  const equations = equationsFromInput(input);
+
+  const possibleEquations = equations.filter((equation) => isEquationPossible(equation, ['+', '*']));
+
+  return possibleEquations.map((equation) => equation.value).reduce((acc, value) => acc + value, 0);
+}, { exampleInput, dataInput });
+
+solution('part 2', (input) => {
+  const equations = equationsFromInput(input);
+
+  const possibleEquations = equations.filter((equation) => isEquationPossible(equation, ['+', '*', '||']));
 
   return possibleEquations.map((equation) => equation.value).reduce((acc, value) => acc + value, 0);
 }, { exampleInput, dataInput });
