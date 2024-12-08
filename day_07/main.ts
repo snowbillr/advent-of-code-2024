@@ -1,11 +1,13 @@
-import { readLines } from '../utils/input';
+import { readLines, multiFile } from '../utils/input';
 import { log, enable, xlog } from '../utils/log';
 import { printSolutions, solution, xsolution } from '../utils/solution';
 
 // enable();
 
-const exampleInput = readLines('day_07/example.txt');
-const dataInput = readLines('day_07/data.txt');
+const input = multiFile(readLines, {
+  example: 'day_07/example.txt',
+  data: 'day_07/data.txt',
+})
 
 interface Equation {
   value: number;
@@ -82,7 +84,7 @@ solution('part 1', (input) => {
   const possibleEquations = equations.filter((equation) => isEquationPossible(equation, ['+', '*']));
 
   return possibleEquations.map((equation) => equation.value).reduce((acc, value) => acc + value, 0);
-}, { exampleInput, dataInput });
+}, input);
 
 solution('part 2', (input) => {
   const equations = equationsFromInput(input);
@@ -90,6 +92,6 @@ solution('part 2', (input) => {
   const possibleEquations = equations.filter((equation) => isEquationPossible(equation, ['+', '*', '||']));
 
   return possibleEquations.map((equation) => equation.value).reduce((acc, value) => acc + value, 0);
-}, { exampleInput, dataInput });
+}, input);
 
 printSolutions();
